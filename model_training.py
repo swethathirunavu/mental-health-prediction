@@ -6,28 +6,28 @@ from sklearn.metrics import accuracy_score
 import joblib
 
 # Load dataset
-df = pd.read_csv("mental_health_dataset_cleaned.csv")
+df = pd.read_csv('mental_health_dataset_cleaned.csv')
 
-# Encode target variable (mental_health_level: Low, Medium, High)
+# Encode mental health status (Low, Medium, High)
 label_encoder = LabelEncoder()
-df["mental_health_level"] = label_encoder.fit_transform(df["mental_health_level"])
+df['Mental_Health_Status'] = label_encoder.fit_transform(df['Mental_Health_Status'])
 
-# Define features and target
-X = df.drop(columns=["mental_health_level"])
-y = df["mental_health_level"]
+# Features and Target
+X = df.drop('Mental_Health_Status', axis=1)
+y = df['Mental_Health_Status']
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train model
+# Model training
 model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 
-# Evaluate model
+# Save model
+joblib.dump(model, 'mental_health_model.pkl')
+
+# Optional: check accuracy
 y_pred = model.predict(X_test)
 acc = accuracy_score(y_test, y_pred)
-print("Model Accuracy:", round(acc * 100, 2), "%")
+print(f"Model trained successfully! Accuracy: {acc:.2f}")
 
-# Save model and encoder
-joblib.dump(model, "model.pkl")
-joblib.dump(label_encoder, "label_encoder.pkl")
